@@ -17,6 +17,12 @@ Run both providers on three built-in prompts:
 python try_tikz.py --provider both
 ```
 
+Run the advanced math/science suite:
+
+```powershell
+python try_tikz.py --provider groq --suite advanced
+```
+
 Run one provider:
 
 ```powershell
@@ -24,10 +30,18 @@ python try_tikz.py --provider openai
 python try_tikz.py --provider groq
 ```
 
+If OpenAI billing is inactive, the script records the first account error and skips the remaining OpenAI prompts in that run.
+
 Try your own worksheet figure prompt:
 
 ```powershell
-python try_tikz.py --provider both --prompt "Draw a right triangle with legs 3 and 4 and label the hypotenuse."
+python try_tikz.py --provider both --prompt 'Draw a circle with center $O$ and radius $10\text{ cm}$.'
+```
+
+PowerShell expands `$O` inside double quotes, so use single quotes for LaTeX-style math. For long prompts, put the text in a file and run:
+
+```powershell
+python try_tikz.py --provider both --prompt-file prompt.txt
 ```
 
 Override models:
@@ -44,10 +58,13 @@ Outputs go to `runs/<timestamp>/`:
 
 ## Rendering
 
-The script tries `tectonic`, then `pdflatex`, then `lualatex`. If none are on `PATH`, it still writes `.tikz` and `.tex` and records `"rendered": false`.
+The script tries `tectonic`, then `pdflatex`, then `lualatex`, then Codex's bundled Tectonic. If none are available, it still writes `.tikz` and `.tex` and records `"rendered": false`.
 
-For local PDFs, install Tectonic and rerun:
+For local PDFs outside Codex, install Tectonic and rerun:
 
 ```powershell
 winget install Tectonic.Tectonic
 ```
+
+Groq GPT-OSS models use `reasoning_effort: low` to keep test runs cheaper.
+If GPT-OSS trips Groq's `tool_use_failed` geometry behavior, the script retries once with `llama-3.1-8b-instant`.
