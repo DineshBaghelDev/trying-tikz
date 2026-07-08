@@ -23,6 +23,12 @@ Run the advanced math/science suite:
 python try_tikz.py --provider groq --suite advanced
 ```
 
+Run the tougher worksheet stress suite:
+
+```powershell
+python try_tikz.py --provider groq --suite hardcore
+```
+
 Run one provider:
 
 ```powershell
@@ -55,6 +61,13 @@ Outputs go to `runs/<timestamp>/`:
 - `.tikz` raw model output, cleaned when possible
 - `.tex` standalone wrapper
 - `summary.json` with model, latency, usage when returned, paths, and render status
+- `score` inside `summary.json` with pass rate, token total, warnings, and failures
+
+Collect the latest successful PDF for each prompt:
+
+```powershell
+python try_tikz.py --collect-best
+```
 
 ## Rendering
 
@@ -68,3 +81,6 @@ winget install Tectonic.Tectonic
 
 Groq GPT-OSS models use `reasoning_effort: low` to keep test runs cheaper.
 If GPT-OSS trips Groq's `tool_use_failed` geometry behavior, the script retries once with `llama-3.1-8b-instant`.
+
+The model prompt intentionally asks for simple TikZ only, explicit coordinates, centered layouts, short offset labels, and no overlapping labels/arrows. This is more reliable for worksheets than clever generated TikZ.
+For worksheet production, keep fixed TikZ templates for common diagram families such as circuits, pulleys, waves, fractions, methane, and simple electrostatics. Use the model for open-ended diagrams, then render and visually review.

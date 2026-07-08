@@ -1,0 +1,107 @@
+{
+  "custom": {
+    "model": "openai/gpt-oss-20b",
+    "source": "runs\\20260708-135200-959430\\groq-custom.pdf",
+    "copied": "best-pdfs\\custom-openai_gpt-oss-20b.pdf"
+  },
+  "circle-tangents": {
+    "model": "openai/gpt-oss-20b",
+    "source": "runs\\20260708-135000-711234\\groq-circle-tangents.pdf",
+    "copied": "best-pdfs\\circle-tangents-openai_gpt-oss-20b.pdf"
+  },
+  "similar-triangles": {
+    "model": "openai/gpt-oss-20b",
+    "source": "runs\\20260708-135000-711234\\groq-similar-triangles.pdf",
+    "copied": "best-pdfs\\similar-triangles-openai_gpt-oss-20b.pdf"
+  },
+  "vectors-3d": {
+    "model": "openai/gpt-oss-20b",
+    "source": "runs\\20260708-135000-711234\\groq-vectors-3d.pdf",
+    "copied": "best-pdfs\\vectors-3d-openai_gpt-oss-20b.pdf"
+  },
+  "ray-optics": {
+    "model": "openai/gpt-oss-20b",
+    "source": "runs\\20260708-135000-711234\\groq-ray-optics.pdf",
+    "copied": "best-pdfs\\ray-optics-openai_gpt-oss-20b.pdf"
+  },
+  "pulley-system": {
+    "model": "openai/gpt-oss-20b",
+    "source": "runs\\20260708-135000-711234\\groq-pulley-system.pdf",
+    "copied": "best-pdfs\\pulley-system-openai_gpt-oss-20b.pdf"
+  },
+  "circuit": {
+    "model": "openai/gpt-oss-20b",
+    "source": "runs\\20260708-135000-711234\\groq-circuit.pdf",
+    "copied": "best-pdfs\\circuit-openai_gpt-oss-20b.pdf"
+  },
+  "electrostatics-field": {
+    "model": "openai/gpt-oss-20b",
+    "source": "runs\\20260708-135000-711234\\groq-electrostatics-field.pdf",
+    "copied": "best-pdfs\\electrostatics-field-openai_gpt-oss-20b.pdf"
+  },
+  "organic-reaction": {
+    "model": "openai/gpt-oss-20b",
+    "source": "runs\\20260708-135000-711234\\groq-organic-reaction.pdf",
+    "copied": "best-pdfs\\organic-reaction-openai_gpt-oss-20b.pdf"
+  },
+  "waves": {
+    "model": "openai/gpt-oss-20b",
+    "source": "runs\\20260708-135000-711234\\groq-waves.pdf",
+    "copied": "best-pdfs\\waves-openai_gpt-oss-20b.pdf"
+  },
+  "thermo-pv": {
+    "model": "openai/gpt-oss-20b",
+    "source": "runs\\20260708-134719-837250\\groq-thermo-pv.pdf",
+    "copied": "best-pdfs\\thermo-pv-openai_gpt-oss-20b.pdf"
+  },
+  "vectors": {
+    "model": "openai/gpt-oss-120b",
+    "source": "runs\\20260708-134213-407562\\groq-vectors.pdf",
+    "copied": "best-pdfs\\vectors-openai_gpt-oss-120b.pdf"
+  },
+  "3d-geometry": {
+    "model": "openai/gpt-oss-120b",
+    "source": "runs\\20260708-134213-407562\\groq-3d-geometry.pdf",
+    "copied": "best-pdfs\\3d-geometry-openai_gpt-oss-120b.pdf"
+  },
+  "chemistry": {
+    "model": "openai/gpt-oss-120b",
+    "source": "runs\\20260708-134213-407562\\groq-chemistry.pdf",
+    "copied": "best-pdfs\\chemistry-openai_gpt-oss-120b.pdf"
+  },
+  "free-body": {
+    "model": "openai/gpt-oss-120b",
+    "source": "runs\\20260708-134213-407562\\groq-free-body.pdf",
+    "copied": "best-pdfs\\free-body-openai_gpt-oss-120b.pdf"
+  },
+  "rotational-motion": {
+    "model": "openai/gpt-oss-120b",
+    "source": "runs\\20260708-134213-407562\\groq-rotational-motion.pdf",
+    "copied": "best-pdfs\\rotational-motion-openai_gpt-oss-120b.pdf"
+  },
+  "gravitation": {
+    "model": "openai/gpt-oss-120b",
+    "source": "runs\\20260708-134213-407562\\groq-gravitation.pdf",
+    "copied": "best-pdfs\\gravitation-openai_gpt-oss-120b.pdf"
+  },
+  "electrostatics": {
+    "model": "openai/gpt-oss-120b",
+    "source": "runs\\20260708-134213-407562\\groq-electrostatics.pdf",
+    "copied": "best-pdfs\\electrostatics-openai_gpt-oss-120b.pdf"
+  },
+  "geometry": {
+    "model": "openai/gpt-oss-20b",
+    "source": "runs\\20260708-134135-773842\\groq-geometry.pdf",
+    "copied": "best-pdfs\\geometry-openai_gpt-oss-20b.pdf"
+  },
+  "coordinate": {
+    "model": "openai/gpt-oss-20b",
+    "source": "runs\\20260708-134135-773842\\groq-coordinate.pdf",
+    "copied": "best-pdfs\\coordinate-openai_gpt-oss-20b.pdf"
+  },
+  "fraction": {
+    "model": "openai/gpt-oss-20b",
+    "source": "runs\\20260708-134135-773842\\groq-fraction.pdf",
+    "copied": "best-pdfs\\fraction-openai_gpt-oss-20b.pdf"
+  }
+}
