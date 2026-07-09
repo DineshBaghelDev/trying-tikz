@@ -1,0 +1,2 @@
+"""Worksheet TikZ generation harness."""
+

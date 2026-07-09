@@ -1,5 +1,32 @@
 .env
 
-node_modules
 __pycache__/
+*.py[cod]
+
+node_modules/
+
+# Generated run/review artifacts
 runs/
+all-pdfs/
+best-pdfs/
+new_algo_runs/
+qwen_*/
+qwen_*runs*/
+qwen_*verify*/
+qwen_*best*/
+qwen_*review*/
+tmp-*/
+
+# Scratch/generated prompt suites
+qwen_*.json
+sample_*.json
+student_worksheet_smoke.json
+
+# LaTeX/render outputs
+*.aux
+*.log
+*.out
+*.pdf
+*.tex
+*.tikz
+*.zip
