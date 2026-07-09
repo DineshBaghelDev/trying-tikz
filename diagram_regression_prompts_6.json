@@ -1,0 +1,18 @@
+{
+  "physics-nuclear-decay-chain": "Draw a nuclear decay chain diagram with parent nucleus X, alpha decay to Y, beta-minus decay to Z, arrows labeled alpha and beta-, and mass/atomic numbers shown as superscripts/subscripts.",
+  "physics-photoelectric-graph": "Draw photoelectric effect graph of stopping potential versus frequency, threshold frequency f0, slope h/e, x-intercept, and labels outside the line.",
+  "physics-ac-generator": "Draw a simple AC generator with rotating coil between N and S magnets, slip rings, brushes, external load resistor, and rotation arrow.",
+  "physics-rutherford-scattering": "Draw alpha particles approaching a gold nucleus, one undeflected path, one slightly deflected path, one backscattered path, and labels away from trajectories.",
+  "physics-free-body-bank-angle": "Draw a free-body diagram of a car on a banked curve: road tilted by theta, normal force perpendicular to road, weight vertical, centripetal component toward center, labels separated.",
+  "physics-thermal-conduction-rod": "Draw a rod conducting heat from hot end to cold end, temperatures T_hot and T_cold, heat flow arrow Q/t, length L, area A cross-section label.",
+  "chem-electron-configuration-boxes": "Draw orbital box diagram for nitrogen: 1s, 2s, three 2p boxes with arrows following Hund's rule, labels clearly separated.",
+  "chem-calorimetry-coffee-cup": "Draw a coffee-cup calorimeter with nested cups, thermometer, lid, solution, stirrer, temperature change label Delta T, and heat flow label.",
+  "chem-solubility-ksp": "Draw a dissolution equilibrium beaker for AgCl(s) reversible to Ag+ and Cl- ions, solid at bottom, Ksp expression below, labels not overlapping.",
+  "chem-redox-cell-salt-bridge": "Draw a galvanic redox cell with oxidation half-cell, reduction half-cell, salt bridge, electron flow, ion migration arrows, and anode/cathode labels.",
+  "chem-lewis-co2": "Draw Lewis structure of CO2 with O=C=O linear geometry, lone pairs on each oxygen, partial charges optional, and 180 degree label.",
+  "chem-heating-cooling-curve": "Draw a heating curve with temperature vs heat added, sloped solid/liquid/gas segments, flat melting and boiling plateaus, and labels outside the line.",
+  "math-histogram-normal-overlay": "Draw a histogram with five bins and a smooth normal curve overlay, axes, mean marker, and no label overlap.",
+  "math-scatter-regression-residual": "Draw a scatter plot with regression line, one highlighted residual vertical segment, axes, and label residual away from points.",
+  "math-3d-plane-intersection": "Draw 3D-looking coordinate axes with a plane cutting the axes at intercepts a, b, c, shaded lightly, and labels outside the plane.",
+  "math-related-rates-ladder": "Draw a related-rates ladder sliding down a wall, wall/floor axes, ladder length L, bottom distance x, top height y, and velocity arrows dx/dt and dy/dt."
+}

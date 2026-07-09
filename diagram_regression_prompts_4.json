@@ -1,0 +1,18 @@
+{
+  "physics-lcr-resonance-graph": "Draw an LCR series circuit with AC source, resistor R, inductor L, capacitor C, current arrow, and a small resonance graph of current versus frequency with peak at f0.",
+  "physics-transformer-core": "Draw a transformer with laminated iron core, primary coil, secondary coil, AC input label, output label, and magnetic flux arrows through the core.",
+  "physics-double-slit-intensity": "Draw Young double slit setup with source, two slits S1 and S2, screen, path difference labels, central maximum, and a small intensity fringe pattern.",
+  "physics-fluid-manometer": "Draw a U-tube manometer connected to a gas flask, liquid levels with height difference h, pressure labels Pgas and Patm, and no overlapping labels.",
+  "physics-carnot-cycle-pv": "Draw a P-V diagram for a Carnot cycle with two isotherms and two adiabats, points A,B,C,D, arrows around the cycle, and shaded work area.",
+  "physics-collision-momentum": "Draw a one-dimensional collision diagram before and after: two carts with masses m1 and m2, velocities before and after, and a clear divider between panels.",
+  "chem-peptide-bond": "Draw formation of a peptide bond between two amino acids with NH2, COOH, loss of H2O, and resulting amide bond highlighted. Keep text readable.",
+  "chem-sn1-energy-profile": "Draw an SN1 reaction energy profile with two humps, carbocation intermediate, transition states TS1 and TS2, and activation energy labels.",
+  "chem-tetrahedral-chiral-center": "Draw a tetrahedral chiral carbon with four different groups H, OH, CH3, Br using wedge/dash style and label chiral center.",
+  "chem-unit-cell-fcc": "Draw a face-centered cubic unit cell with corner atoms and face-center atoms, a labelled cube edge a, and a short label FCC.",
+  "chem-enthalpy-born-haber-simple": "Draw a simplified Born-Haber style enthalpy ladder for MgO with separated levels and short labels, no text overlap.",
+  "chem-hydrogen-bond-water": "Draw two water molecules with a dashed hydrogen bond O-H...O, partial charges, lone pairs, and labels placed outside bonds.",
+  "math-ellipse-foci": "Draw an ellipse with major/minor axes, foci F1 and F2, center O, a point P on the ellipse, and dashed lines PF1 and PF2.",
+  "math-cone-frustum-volume": "Draw a frustum of a cone with top radius r, bottom radius R, height h, and volume formula below, labels outside the solid.",
+  "math-parametric-curve": "Draw x-y axes with a parametric curve looping once, arrows showing direction of increasing t, and labels t=0 and t=1 placed away from the curve.",
+  "math-tangent-normal-curve": "Draw a smooth curve y=f(x), point P on the curve, tangent line, normal line perpendicular to tangent, and slope labels with no overlap."
+}

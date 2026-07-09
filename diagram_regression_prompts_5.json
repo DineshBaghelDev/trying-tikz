@@ -1,0 +1,18 @@
+{
+  "physics-op-amp-inverting": "Draw an inverting op-amp circuit with input resistor Rin, feedback resistor Rf, non-inverting input grounded, input voltage Vin, output Vout, and op-amp triangle. Labels must not overlap wires.",
+  "physics-telescope-ray-diagram": "Draw an astronomical telescope ray diagram with objective lens, eyepiece lens, parallel incoming rays, intermediate image, final parallel rays, and focal length labels.",
+  "physics-equipotential-dipole": "Draw equipotential curves around an electric dipole with +q and -q, several closed/dashed curves, electric field direction arrows, and labels away from curves.",
+  "physics-capacitor-dielectric": "Draw a parallel plate capacitor with dielectric slab inserted halfway, plate charges +Q and -Q, field arrows, plate separation d, and dielectric constant k label.",
+  "physics-heat-engine-flow": "Draw a heat engine block diagram with hot reservoir TH, engine, cold reservoir TC, heat input QH, work output W, rejected heat QC, and arrows with no overlap.",
+  "physics-standing-wave-pipe": "Draw standing wave modes in an open-closed pipe for the first and third harmonics, showing node/antinode labels and pipe endpoints clearly.",
+  "chem-phase-diagram-co2": "Draw a CO2 phase diagram with pressure-temperature axes, sublimation/fusion/vaporization curves, triple point, critical point, and labeled solid/liquid/gas regions.",
+  "chem-nitration-benzene": "Draw a simple nitration of benzene reaction scheme: benzene plus NO2+ gives nitrobenzene. Show aromatic ring and NO2 substituent clearly.",
+  "chem-organic-curved-arrow": "Draw a simple organic curved-arrow mechanism step with hydroxide attacking a carbonyl carbon, pi bond moving to oxygen, and labels nucleophile/electrophile.",
+  "chem-michaelis-menten": "Draw a Michaelis-Menten enzyme kinetics graph with v versus substrate concentration S, Vmax asymptote, Km marked at Vmax/2, and labels outside curves.",
+  "chem-amino-acid-zwitterion": "Draw a generic amino acid zwitterion with NH3+, COO-, R group, H, central carbon, and charges readable.",
+  "chem-crystal-field-octahedral": "Draw octahedral crystal field splitting diagram with lower t2g set, upper eg set, delta_o gap, and electron arrows separated.",
+  "math-3d-paraboloid-contours": "Draw a 3D-looking paraboloid z=x^2+y^2 with axes and a small adjacent contour map of concentric circles. Keep labels outside shapes.",
+  "math-vector-projection": "Draw vectors a and b from the origin, the projection of a onto b as a dashed foot, right angle mark, and labels proj_b a and a-proj component.",
+  "math-normal-curve-zscore": "Draw a normal distribution with mean mu, z-score region shaded to the right of z, vertical lines at mu and z, and labels not overlapping.",
+  "math-boxplot-outliers": "Draw a horizontal box plot with whiskers, median, Q1, Q3, two outlier points, and number line ticks below."
+}

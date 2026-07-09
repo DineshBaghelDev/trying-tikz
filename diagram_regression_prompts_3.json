@@ -1,0 +1,18 @@
+{
+  "physics-rotational-pulley-disk": "Draw a disk pulley with radius R and moment of inertia I, a hanging mass m attached by a string, tension T on the string, angular acceleration alpha, and downward acceleration a. Keep labels outside the rope and disk.",
+  "physics-torque-ladder-wall": "Draw a ladder leaning against a wall with floor friction, wall normal, ladder weight at center, person weight on ladder, angle theta at floor, and force arrows not overlapping.",
+  "physics-magnetic-force-wire": "Draw a straight wire carrying current I to the right inside a uniform magnetic field into the page. Show crosses for B into page, force F upward, and labels spaced clearly.",
+  "physics-rl-circuit-decay": "Draw an RL circuit with battery, switch, resistor R, inductor L, current arrow, and a small inset graph of current decay after switch opens.",
+  "physics-doppler-moving-source": "Draw Doppler wavefronts for a source moving right with compressed wavefronts ahead and spread wavefronts behind, velocity arrow v_s, and observer labels front/back.",
+  "physics-gauss-sphere-field": "Draw a Gaussian sphere around a positive point charge, radial electric field arrows through the surface, radius r label, and closed surface label.",
+  "chem-molecular-orbital-o2": "Draw a simplified molecular orbital energy diagram for O2 with atomic orbitals on left/right, molecular orbitals in center, electron arrows, and separated labels.",
+  "chem-reaction-coordinate-two-step": "Draw a two-step reaction coordinate diagram with reactants, intermediate, products, two transition states, activation energies Ea1 and Ea2, and no overlapping labels.",
+  "chem-haber-process-equilibrium": "Draw a reaction vessel for N2 + 3H2 reversible to 2NH3 with pressure up, temperature label, fewer gas moles side, and shift arrow toward NH3.",
+  "chem-polymer-repeat-unit": "Draw an addition polymerization schematic from ethene to polyethene repeat unit, with bracketed repeat unit and subscript n, keeping text on one baseline.",
+  "chem-electron-dot-water": "Draw a Lewis dot structure for H2O with O center, two H atoms, two lone pairs on oxygen, and no overlap between lone pair dots and labels.",
+  "chem-buffers-henderson": "Draw a buffer beaker schematic with HA and A- species, small arrows consuming added H+ and OH-, and Henderson-Hasselbalch equation below the beaker.",
+  "math-polar-rose": "Draw polar axes with a four-petal rose curve r=cos(2theta), label one petal, theta angle marker, and keep labels away from the curve.",
+  "math-riemann-sum": "Draw y=x^2 from 0 to 2 with four right-endpoint rectangles under the curve, shaded rectangles, axes, and labels Delta x and f(x_i).",
+  "math-eigenvectors-linear-map": "Draw a coordinate plane with two eigenvector directions as lines through the origin, vector v on one line, transformed vector Av longer on the same line, and another vector w rotated off its line.",
+  "math-solid-revolution-shell": "Draw axes, curve y=sqrt(x), a vertical shell rectangle at x, radius x, height sqrt(x), and rotation around the y-axis shown with a curved arrow."
+}

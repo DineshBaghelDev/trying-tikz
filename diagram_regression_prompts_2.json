@@ -1,0 +1,18 @@
+{
+  "physics-concave-mirror-real-image": "Draw a concave mirror ray diagram with principal axis, C, F, object beyond C, two principal rays, and a real inverted image between C and F. Keep labels outside ray intersections.",
+  "physics-convex-mirror-virtual-image": "Draw a convex mirror ray diagram with principal axis, C and F behind the mirror, object in front, diverging reflected rays, dashed extensions, and a small upright virtual image behind the mirror.",
+  "physics-prism-dispersion": "Draw white light entering a triangular glass prism and splitting into red, green, and violet rays. Keep the prism large and labels outside the rays.",
+  "physics-wheatstone-bridge": "Draw a Wheatstone bridge circuit with four resistors in a diamond, a galvanometer across the middle, a battery across the outer nodes, and labels R1, R2, R3, R4, G.",
+  "physics-free-body-pulled-block": "Draw a block on a rough horizontal surface pulled by force F at angle theta. Show N upward, mg downward, friction left, applied force angled up-right, and angle theta clearly.",
+  "physics-projectile-motion": "Draw projectile motion from ground with parabolic path, initial velocity v0 at angle theta, velocity components, gravity arrow, range R, and maximum height H.",
+  "chem-benzene-substitution": "Draw chlorobenzene as an aromatic benzene ring with a Cl substituent. It must clearly look aromatic, not like cyclohexane.",
+  "chem-newman-projection": "Draw a staggered Newman projection for ethane with front carbon dot, rear carbon circle, six H labels spaced cleanly, and the word staggered below.",
+  "chem-fischer-projection": "Draw a simple Fischer projection for glyceraldehyde with vertical carbon chain CHO-CH(OH)-CH2OH and horizontal H/OH groups, labels readable and not overlapping.",
+  "chem-electrolysis-molten-nacl": "Draw electrolysis of molten NaCl with two electrodes, battery, Na+ moving to cathode, Cl- moving to anode, and products Na and Cl2 labelled outside the cell.",
+  "chem-born-haber-clean": "Draw a clean Born-Haber cycle as an energy ladder for NaCl with separated horizontal levels and short labels: Na(s)+1/2Cl2(g), Na(g), Na+(g)+e-, Cl(g), Cl-(g), NaCl(s). No overlapping labels.",
+  "chem-vsepr-sf6": "Draw SF6 octahedral molecular geometry with S center, six F atoms along up/down/left/right/front/back directions, and label octahedral.",
+  "math-matrix-transformation": "Draw a coordinate grid showing a triangle and its image under a shear transformation. Label A,B,C and A',B',C' with no overlap.",
+  "math-complex-plane-roots": "Draw the complex plane with the three cube roots of unity on the unit circle, labels 1, omega, omega^2, axes Re and Im, and 120 degree spacing.",
+  "math-integral-area-between-curves": "Draw x-y axes, two curves y=x and y=x^2 from 0 to 1, shade the area between them, and label both curves outside the shaded region.",
+  "math-vector-cross-product": "Draw 3D-looking axes with vectors a and b from the origin and vector a cross b perpendicular to their plane. Use dashed projection lines and keep labels away from tips."
+}

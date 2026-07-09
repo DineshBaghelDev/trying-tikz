@@ -1,0 +1,18 @@
+{
+  "chem-benzene-ring": "Draw benzene as an aromatic ring for an organic chemistry worksheet. It must not look like cyclohexane. Show the hexagon and aromatic delocalization clearly.",
+  "physics-convex-lens-real-image": "Draw a convex lens ray diagram with an object on the left, two principal rays, focal points on both sides, and a real inverted image on the right.",
+  "physics-concave-lens-virtual-image": "Draw a concave lens ray diagram with an object on the left, diverging rays, dashed backward extensions, focal points, and a small upright virtual image on the object side.",
+  "physics-inclined-plane-components": "Draw a block resting on an inclined plane. The block must be rotated to sit on the slope. Show weight vertically downward, normal perpendicular to the plane, friction along the plane, and component mg sin theta along the plane.",
+  "physics-block-on-ramp": "Draw a free-body diagram for a rectangular block on a ramp with angle theta. The block must not float or remain horizontal; it should align with the ramp surface.",
+  "physics-compound-pulley": "Draw a worksheet diagram of a two-pulley system with one fixed pulley, one movable pulley, a load, support, rope path, and tension labels placed away from rope crossings.",
+  "physics-rolling-with-forces": "Draw a rolling cylinder on a rough horizontal surface with velocity, angular velocity, normal, weight, static friction, and contact point labels.",
+  "physics-electrostatic-dipole-field": "Draw an electric dipole field diagram with +q and -q, curved field lines from positive to negative, a labeled dipole axis, and a point P on the perpendicular bisector.",
+  "chem-chair-conformation": "Draw a simple cyclohexane chair conformation with axial and equatorial bonds labelled on two adjacent carbons, keeping labels outside the ring.",
+  "chem-distillation-apparatus": "Draw a simple distillation setup with boiling flask, thermometer, condenser, water in/out arrows, receiver, and heat source. Use large objects and short external labels.",
+  "chem-galvanic-cell": "Draw a Daniell galvanic cell with Zn and Cu half-cells, salt bridge, electron flow wire, anode/cathode labels, and ion labels with no overlaps.",
+  "chem-titration-curve": "Draw a weak acid strong base titration curve with pH axis, volume axis, buffer region, half-equivalence point, equivalence point above pH 7, and labels outside the curve.",
+  "math-3d-vector-projection": "Draw a 3D coordinate axes diagram in 2D perspective with vector v, dashed projection to the xy-plane, component labels vx, vy, vz, and endpoint label.",
+  "math-probability-tree-clean": "Draw a two-stage probability tree for Rain/No rain and Late/On time. Put probabilities on branches and final products below leaves with no text collisions.",
+  "math-spherical-geometry": "Draw a sphere-like great circle diagram with a triangle on the sphere, three labeled vertices, one highlighted arc, and labels outside curves.",
+  "math-orthocenter-altitudes": "Draw an acute triangle ABC with all three altitudes dashed and intersecting at orthocenter H. Labels must not overlap lines."
+}
