@@ -8,6 +8,7 @@ Run:  python test_harness.py
 """
 
 import try_tikz as t
+from tikz_harness import deterministic as det
 from tikz_harness.templates import library as templates_mod
 
 _passed = 0
@@ -110,6 +111,11 @@ def test_model_pairs():
         provider = "openai"; openai_model = "o"; groq_models = "a,b"
     check("openai only", t._model_pairs(C) == [("openai", "o")])
 
+    class D:
+        provider = "groq"; openai_model = "o"; groq_models = "qwen3-32b,gpt-oss-20b"
+    check("Groq shorthand normalized", t._model_pairs(D) == [
+        ("groq", "qwen/qwen3-32b"), ("groq", "openai/gpt-oss-20b")])
+
 
 # ---- retrieve_template + templates_prompt --------------------------------------------
 def test_retrieval():
@@ -163,9 +169,47 @@ def test_templates_integrity():
     check("no locked templates", not any(tm.get("locked") for tm in templates_mod.TEMPLATES.values()))
 
 
+# ---- deterministic specification engine ---------------------------------------------
+def test_deterministic():
+    print("deterministic")
+    spec = {
+        "domain": "geometry",
+        "points": [
+            {"id": "A", "at": [-3, 0]}, {"id": "B", "at": [0, 0]},
+            {"id": "C", "at": [2, 2]},
+            {"id": "D", "derive": "angle_bisector_point", "from": ["A", "B", "C"]},
+            {"id": "P", "at": [1, 3]},
+            {"id": "H", "derive": "perpendicular_foot", "from": ["P", "A", "C"]},
+        ],
+        "objects": [
+            {"kind": "segment", "points": ["B", "A"]},
+            {"kind": "segment", "points": ["B", "C"]},
+            {"kind": "segment", "points": ["B", "D"], "style": "dashed"},
+            {"kind": "segment", "points": ["P", "H"]},
+            {"kind": "cuboid", "origin": [-2, -1], "width": 2, "height": 1.5, "depth": [0.8, 0.5]},
+        ],
+        "constraints": [
+            {"kind": "angle_bisector", "ray": ["B", "D"], "angle": ["A", "B", "C"]},
+            {"kind": "perpendicular", "lines": [["P", "H"], ["A", "C"]]},
+        ],
+    }
+    tikz, validation, hard = det.render(spec)
+    check("derived constraints pass", validation["valid"] and validation["passed"] == 2)
+    check("generic objects render", "dashed" in tikz and tikz.count("\\draw[thick]") >= 3)
+    check("hardness is reported", hard["score"] > 0 and hard["level"] in {"easy", "medium", "hard", "extreme"})
+    check("semantic score is exact", det.quality_metrics(spec)["semantic_score"] == 10.0)
+    check("empty constraints are unscored", det.quality_metrics({"points": [], "objects": []})["semantic_score"] is None)
+
+    bad = {"points": [{"id": "A", "at": [0, 0]}, {"id": "B", "at": [1, 0]},
+                      {"id": "C", "at": [0, 1]}, {"id": "D", "at": [1, 1]}],
+           "objects": [], "constraints": [{"kind": "perpendicular", "lines": [["A", "B"], ["C", "D"]]}]}
+    check("false relation rejected", not det.validate_spec(bad)["valid"])
+
+
 if __name__ == "__main__":
     for fn in [test_parse_json_loose, test_lint_blueprint, test_score, test_best_results,
-               test_model_pairs, test_retrieval, test_text_utils, test_templates_integrity]:
+               test_model_pairs, test_retrieval, test_text_utils, test_templates_integrity,
+               test_deterministic]:
         fn()
     print(f"\n{_passed} passed, {_failed} failed")
     raise SystemExit(1 if _failed else 0)

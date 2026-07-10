@@ -22,6 +22,13 @@ GROQ_FALLBACK_MODEL = "llama-3.1-8b-instant"
 GROQ_VISION_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
 GROQ_TEXT_MODELS = "openai/gpt-oss-120b,qwen/qwen3-32b,moonshotai/kimi-k2-instruct"
 GROQ_MAVERICK_VISION = "meta-llama/llama-4-scout-17b-16e-instruct"  # maverick not accessible on this key
+GROQ_MODEL_ALIASES = {
+    "qwen3-32b": "qwen/qwen3-32b",
+    "gpt-oss-20b": "openai/gpt-oss-20b",
+    "gpt-oss-120b": "openai/gpt-oss-120b",
+    "kimi-k2-instruct": "moonshotai/kimi-k2-instruct",
+}
+MODEL_CONFIGS = {}
 EMBED_BASE_URL = "http://localhost:1234/v1"
 EMBED_MODEL = "text-embedding-bge-large-en-v1.5"
 EMBED_TIMEOUT = 1.0
@@ -292,6 +299,30 @@ def call_groq_vision(model, image_b64, prompt, timeout):
         "https://api.groq.com/openai/v1/chat/completions",
         {"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
         payload,
+        timeout,
+    )
+    return data["choices"][0]["message"]["content"], time.perf_counter() - started, data.get("usage")
+
+
+def call_openai_compatible(provider, model, prompt, timeout, system=SYSTEM_PROMPT):
+    cfg = MODEL_CONFIGS[(provider, model)]
+    key = os.environ.get(cfg["api_key_env"])
+    if not key:
+        raise RuntimeError(f"{cfg['api_key_env']} is missing")
+    base_url = cfg["base_url"].rstrip("/")
+    started = time.perf_counter()
+    data = post_json(
+        f"{base_url}/chat/completions",
+        {"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+        {
+            "model": model,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": prompt},
+            ],
+            "max_tokens": cfg.get("max_tokens", MAX_TOKENS),
+            "temperature": cfg.get("temperature", 0),
+        },
         timeout,
     )
     return data["choices"][0]["message"]["content"], time.perf_counter() - started, data.get("usage")
@@ -596,12 +627,17 @@ def vision_critique(vision_model, pdf_path, worksheet_prompt, timeout):
 
 
 def score(candidate):
-    """Numeric quality score: compile is a hard gate, then fewer warnings + vision score win."""
+    """Compile is a hard gate; semantic checks outrank visual/model judgement."""
     if not candidate.get("rendered"):
         return -100
+    deterministic = candidate.get("deterministic") or {}
+    semantic_score = deterministic.get("semantic_score")
     vision = candidate.get("vision") or {}
     vision_score = vision.get("score")
-    base = float(vision_score) if isinstance(vision_score, (int, float)) else 6.0
+    if isinstance(semantic_score, (int, float)):
+        base = float(semantic_score)
+    else:
+        base = float(vision_score) if isinstance(vision_score, (int, float)) else 6.0
     base -= 0.5 * len(candidate.get("warnings", []))
     base -= 0.5 * len(candidate.get("blueprint_warnings", []))
     return round(base, 3)
@@ -700,6 +736,8 @@ Return only one tikzpicture."""
 def call_provider(provider, model, prompt, timeout, system=SYSTEM_PROMPT):
     if provider == "openai":
         return call_openai(model, prompt, timeout, system)
+    if (provider, model) in MODEL_CONFIGS:
+        return call_openai_compatible(provider, model, prompt, timeout, system)
     return call_groq(model, prompt, timeout, system)
 
 
@@ -739,12 +777,15 @@ def _compile_with_repairs(run_dir, provider, model, prompt_name, prompt, timeout
 
 def generate_with_repairs(run_dir, provider, model, prompt_name, prompt, timeout, retries, polish,
                           pipeline="vision", vision_model=GROQ_MAVERICK_VISION, critique=2):
-    """Dispatch to one of the three comparison pipelines. Returns all candidates.
+    """Dispatch to one of the generation pipelines. Returns all candidates.
 
     enrich_prompt/CATEGORY_HINTS are deliberately bypassed in all three so the only variable
     is the mechanism under test: nothing (plain) vs template exemplar (templates) vs
     blueprint+vision-critique (vision).
     """
+    if pipeline == "deterministic":
+        from tikz_harness.pipelines import deterministic
+        return deterministic.run(run_dir, provider, model, prompt_name, prompt, timeout, retries)
     if pipeline == "plain":
         from tikz_harness.pipelines import plain
         return plain.run(run_dir, provider, model, prompt_name, prompt, timeout, retries)
@@ -778,6 +819,7 @@ def summarize(results):
     rendered = sum(1 for item in final.values() if item.get("rendered"))
     warnings = sum(len(item.get("warnings", [])) for item in final.values())
     scored = [item["score"] for item in final.values() if item.get("rendered") and isinstance(item.get("score"), (int, float))]
+    deterministic = [item.get("deterministic") for item in final.values() if item.get("deterministic")]
     return {
         "rendered": rendered,
         "total": len(final),
@@ -785,6 +827,13 @@ def summarize(results):
         "total_tokens": sum((item.get("usage") or {}).get("total_tokens", 0) for item in results),
         "warning_count": warnings,
         "mean_score": round(sum(scored) / len(scored), 3) if scored else None,
+        "mean_semantic_score": _mean([item.get("semantic_score") for item in deterministic]),
+        "mean_constraint_coverage": _mean([item.get("constraint_coverage") for item in deterministic]),
+        "models": model_leaderboard(final.values()),
+        "hardness": {
+            level: sum(1 for item in final.values() if (item.get("hardness") or {}).get("level") == level)
+            for level in ("easy", "medium", "hard", "extreme")
+        },
         "failures": [
             {
                 "prompt_name": item.get("prompt_name"),
@@ -795,6 +844,33 @@ def summarize(results):
             for item in final.values()
             if not item.get("rendered")
         ],
+    }
+
+
+def _mean(values):
+    values = [float(value) for value in values if isinstance(value, (int, float))]
+    return round(sum(values) / len(values), 3) if values else None
+
+
+def model_leaderboard(results):
+    grouped = {}
+    for item in results:
+        model = item.get("model")
+        if not model:
+            continue
+        row = grouped.setdefault(model, {"rendered": 0, "total": 0, "scores": [], "semantic": []})
+        row["total"] += 1
+        row["rendered"] += bool(item.get("rendered"))
+        if item.get("rendered") and isinstance(item.get("score"), (int, float)):
+            row["scores"].append(item["score"])
+        semantic = (item.get("deterministic") or {}).get("semantic_score")
+        if isinstance(semantic, (int, float)):
+            row["semantic"].append(semantic)
+    return {
+        model: {"rendered": row["rendered"], "total": row["total"],
+                "pass_rate": round(row["rendered"] / row["total"], 3),
+                "mean_score": _mean(row["scores"]), "mean_semantic_score": _mean(row["semantic"])}
+        for model, row in grouped.items()
     }
 
 
@@ -882,7 +958,7 @@ def load_prompts(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Compare OpenAI and Groq on worksheet TikZ generation.")
-    parser.add_argument("--provider", choices=("openai", "groq", "both"), default="both")
+    parser.add_argument("--provider", choices=("openai", "groq", "both", "none"), default="both")
     parser.add_argument("--openai-model", default=OPENAI_MODEL)
     parser.add_argument("--groq-model", default=GROQ_MODEL)
     parser.add_argument("--suite", choices=("basic", "advanced", "all"), default="basic")
@@ -893,11 +969,12 @@ def main():
     parser.add_argument("--prompt-suite-file", help="Read a JSON object of prompt_name to prompt.")
     parser.add_argument("--retries", type=int, default=1, help="Compile-repair retries per prompt.")
     parser.add_argument("--polish", type=int, default=1, help="Compatibility flag (blind polish).")
-    parser.add_argument("--pipeline", choices=("plain", "templates", "vision"), default="vision", help="Generation strategy.")
+    parser.add_argument("--pipeline", choices=("plain", "templates", "vision", "deterministic"), default="vision", help="Generation strategy.")
     parser.add_argument("--groq-models", default=GROQ_MODEL, help="Comma-separated Groq text models to run.")
+    parser.add_argument("--model-config", help="JSON list of OpenAI-compatible models to add to this run.")
     parser.add_argument("--vision-model", default=GROQ_MAVERICK_VISION, help="Groq multimodal model for the critique loop.")
     parser.add_argument("--critique", type=int, default=2, help="Max vision-critique/repair iterations after a successful compile.")
-    parser.add_argument("--compare", action="store_true", help="Run all 3 pipelines x all --groq-models and build a contact sheet per pipeline.")
+    parser.add_argument("--compare", action="store_true", help="Run all pipelines x all configured models and build review sheets.")
     parser.add_argument("--collect-best", action="store_true")
     parser.add_argument("--contact-sheet", action="store_true")
     parser.add_argument("--by-model", action="store_true", help="Keep the best PDF per (prompt, model) when collecting.")
@@ -943,7 +1020,20 @@ def _model_pairs(args):
         pairs.append(("openai", args.openai_model))
     if args.provider in ("groq", "both"):
         for model in [m.strip() for m in args.groq_models.split(",") if m.strip()]:
-            pairs.append(("groq", model))
+            pairs.append(("groq", GROQ_MODEL_ALIASES.get(model, model)))
+    if getattr(args, "model_config", None):
+        pairs.extend(load_model_config(args.model_config))
+    return pairs
+
+
+def load_model_config(path):
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    pairs = []
+    for item in data:
+        provider = item["name"]
+        model = item["model"]
+        MODEL_CONFIGS[(provider, model)] = item
+        pairs.append((provider, model))
     return pairs
 
 
@@ -975,7 +1065,7 @@ def run_comparison(prompts, args):
     root = Path(args.runs_dir)
     model_pairs = _model_pairs(args)
     overview = {"root": str(root), "models": [m for _, m in model_pairs], "pipelines": {}}
-    for pipeline in ("plain", "templates", "vision"):
+    for pipeline in ("plain", "templates", "vision", "deterministic"):
         run_dir = root / pipeline / dt.datetime.now().strftime("%Y%m%d-%H%M%S-%f")
         run_dir.mkdir(parents=True, exist_ok=True)
         print(f"\n=== pipeline: {pipeline} ({len(prompts)} prompts x {len(model_pairs)} models) ===")

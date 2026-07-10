@@ -1,0 +1,44 @@
+[
+  {
+    "name": "gemini-flash",
+    "model": "gemini-2.5-flash",
+    "base_url": "https://generativelanguage.googleapis.com/v1beta/openai",
+    "api_key_env": "GEMINI_API_KEY"
+  },
+  {
+    "name": "qwen-openrouter",
+    "model": "qwen/qwen3-coder",
+    "base_url": "https://openrouter.ai/api/v1",
+    "api_key_env": "OPENROUTER_API_KEY"
+  },
+  {
+    "name": "kimi-openrouter",
+    "model": "moonshotai/kimi-k2",
+    "base_url": "https://openrouter.ai/api/v1",
+    "api_key_env": "OPENROUTER_API_KEY"
+  },
+  {
+    "name": "glm-openrouter",
+    "model": "z-ai/glm-4.5",
+    "base_url": "https://openrouter.ai/api/v1",
+    "api_key_env": "OPENROUTER_API_KEY"
+  },
+  {
+    "name": "gpt-oss-120b-openrouter",
+    "model": "openai/gpt-oss-120b",
+    "base_url": "https://openrouter.ai/api/v1",
+    "api_key_env": "OPENROUTER_API_KEY"
+  },
+  {
+    "name": "grok-xai",
+    "model": "grok-4",
+    "base_url": "https://api.x.ai/v1",
+    "api_key_env": "XAI_API_KEY"
+  },
+  {
+    "name": "spark",
+    "model": "spark-1.1",
+    "base_url": "REPLACE_WITH_SPARK_OPENAI_COMPATIBLE_BASE_URL",
+    "api_key_env": "SPARK_API_KEY"
+  }
+]
