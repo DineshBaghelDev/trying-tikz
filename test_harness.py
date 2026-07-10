@@ -9,6 +9,7 @@ Run:  python test_harness.py
 
 import try_tikz as t
 from tikz_harness import deterministic as det
+from tikz_harness.pipelines import deterministic as adaptive
 from tikz_harness.templates import library as templates_mod
 
 _passed = 0
@@ -76,6 +77,8 @@ def test_score():
     check("rendered no vision = 6.0", t.score({"rendered": True, "warnings": [], "blueprint_warnings": []}) == 6.0)
     check("vision score used", t.score({"rendered": True, "warnings": [], "blueprint_warnings": [], "vision": {"score": 9}}) == 9.0)
     check("warnings subtract", t.score({"rendered": True, "warnings": ["x", "y"], "blueprint_warnings": ["z"]}) == 6.0 - 1.5)
+    check("visual score caps exact score", t.score({"rendered": True, "warnings": [], "blueprint_warnings": [],
+          "deterministic": {"semantic_score": 10}, "vision": {"score": 5}}) == 5.0)
 
 
 # ---- best_results --------------------------------------------------------------------
@@ -204,6 +207,10 @@ def test_deterministic():
                       {"id": "C", "at": [0, 1]}, {"id": "D", "at": [1, 1]}],
            "objects": [], "constraints": [{"kind": "perpendicular", "lines": [["A", "B"], ["C", "D"]]}]}
     check("false relation rejected", not det.validate_spec(bad)["valid"])
+    check("canonical physics uses trusted template",
+          adaptive.choose_route("physics-incline", "Draw a block on an inclined plane")[0] == "trusted-template")
+    check("specialist diagram uses adaptive fallback",
+          adaptive.choose_route("chem-special", "Draw an unusual reaction apparatus")[0] in {"template", "vision"})
 
 
 if __name__ == "__main__":

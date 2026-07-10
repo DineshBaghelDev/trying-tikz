@@ -107,7 +107,12 @@ def _pt(value):
 
 
 def _tex(text):
-    return str(text).replace("\\", r"\textbackslash ").replace("{", r"\{").replace("}", r"\}")
+    replacements = {"\\": r"\textbackslash ", "{": r"\{", "}": r"\}",
+                    "_": r"\_", "%": r"\%", "&": r"\&", "#": r"\#"}
+    text = str(text)
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+    return text
 
 
 def _math_text(text):
@@ -145,6 +150,18 @@ def _resolve_point(item, points):
     if kind == "offset":
         dx, dy = item["vector"]
         return refs[0] + Point2D(dx, dy)
+    if kind == "dilation":
+        point, center = refs
+        factor = item.get("factor", item.get("scale", 1))
+        return center + (point - center) * factor
+    if kind == "rotation":
+        point, center = refs
+        return point.rotate(math.radians(float(item.get("angle", 0))), center)
+    if kind == "reflection":
+        point, a, b = refs
+        return point.reflect(Line2D(a, b))
+    if kind == "circumcenter":
+        return Triangle(*refs[:3]).circumcircle.center
     if kind == "intersection":
         a, b, c, d = refs
         intersections = Line2D(a, b).intersection(Line2D(c, d))
@@ -240,10 +257,7 @@ def render(spec):
 
 def _render_object(obj, points):
     kind = obj["kind"]
-    allowed_styles = {"", "thick", "dashed", "dotted", "gray", "thin", "very thick"}
-    style = obj.get("style", "")
-    if style not in allowed_styles:
-        raise ValueError(f"unsupported style: {style}")
+    style = _safe_style(obj.get("style", ""))
     option = f"[{style}]" if style else ""
     refs = [points[name] for name in obj.get("points", [])]
     if kind in ("segment", "line", "arrow"):
@@ -303,7 +317,7 @@ def _render_object(obj, points):
     if kind == "function":
         samples = max(2, min(201, int(obj.get("samples", 41))))
         xmin, xmax = map(float, obj["xrange"])
-        expression = obj["expression"]
+        expression = str(obj["expression"]).replace("math.", "")
         try:
             from sympy import lambdify, symbols, sympify
             x = symbols("x")
@@ -318,6 +332,23 @@ def _render_object(obj, points):
                 coords.append(_pt((value, result)))
         return [f"\\draw{option} " + " -- ".join(coords) + ";"]
     raise ValueError(f"unknown object kind: {kind}")
+
+
+def _safe_style(style):
+    """Normalize model styling to the small monochrome TikZ vocabulary we support."""
+    style = str(style or "").lower().strip()
+    if style in ("open", "none"):
+        return ""
+    tokens = []
+    for token in style.split(","):
+        token = token.strip()
+        if token in {"thick", "dashed", "dotted", "gray", "thin", "very thick"}:
+            tokens.append(token)
+        elif token.startswith("fill="):
+            tokens.extend(["fill=gray!20", "draw=black"])
+        elif token in {"red", "blue", "green", "orange", "purple"}:
+            tokens.append("gray")
+    return ",".join(dict.fromkeys(tokens))
 
 
 def quality_metrics(spec):

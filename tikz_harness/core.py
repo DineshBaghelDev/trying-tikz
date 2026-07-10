@@ -635,7 +635,7 @@ def score(candidate):
     vision = candidate.get("vision") or {}
     vision_score = vision.get("score")
     if isinstance(semantic_score, (int, float)):
-        base = float(semantic_score)
+        base = min(float(semantic_score), float(vision_score)) if isinstance(vision_score, (int, float)) else float(semantic_score)
     else:
         base = float(vision_score) if isinstance(vision_score, (int, float)) else 6.0
     base -= 0.5 * len(candidate.get("warnings", []))
@@ -785,7 +785,8 @@ def generate_with_repairs(run_dir, provider, model, prompt_name, prompt, timeout
     """
     if pipeline == "deterministic":
         from tikz_harness.pipelines import deterministic
-        return deterministic.run(run_dir, provider, model, prompt_name, prompt, timeout, retries)
+        return deterministic.run(run_dir, provider, model, prompt_name, prompt, timeout, retries,
+                                 vision_model, critique)
     if pipeline == "plain":
         from tikz_harness.pipelines import plain
         return plain.run(run_dir, provider, model, prompt_name, prompt, timeout, retries)
@@ -819,11 +820,14 @@ def summarize(results):
     rendered = sum(1 for item in final.values() if item.get("rendered"))
     warnings = sum(len(item.get("warnings", [])) for item in final.values())
     scored = [item["score"] for item in final.values() if item.get("rendered") and isinstance(item.get("score"), (int, float))]
+    quality_passed = sum(1 for item in final.values() if item.get("rendered") and item.get("score", 0) >= 8)
     deterministic = [item.get("deterministic") for item in final.values() if item.get("deterministic")]
     return {
         "rendered": rendered,
         "total": len(final),
         "pass_rate": round(rendered / len(final), 3) if final else 0,
+        "quality_passed": quality_passed,
+        "quality_pass_rate": round(quality_passed / len(final), 3) if final else 0,
         "total_tokens": sum((item.get("usage") or {}).get("total_tokens", 0) for item in results),
         "warning_count": warnings,
         "mean_score": round(sum(scored) / len(scored), 3) if scored else None,
@@ -834,6 +838,10 @@ def summarize(results):
             level: sum(1 for item in final.values() if (item.get("hardness") or {}).get("level") == level)
             for level in ("easy", "medium", "hard", "extreme")
         },
+        "routes": {
+            route: sum(1 for item in final.values() if (item.get("adaptive") or {}).get("route") == route)
+            for route in sorted({(item.get("adaptive") or {}).get("route") for item in final.values()} - {None})
+        },
         "failures": [
             {
                 "prompt_name": item.get("prompt_name"),
@@ -843,6 +851,13 @@ def summarize(results):
             }
             for item in final.values()
             if not item.get("rendered")
+        ],
+        "quality_issues": [
+            {"prompt_name": item.get("prompt_name"), "model": item.get("model"),
+             "score": item.get("score"), "route": (item.get("adaptive") or {}).get("route"),
+             "issues": (item.get("vision") or {}).get("issues", [])}
+            for item in final.values()
+            if item.get("rendered") and item.get("score", 0) < 8
         ],
     }
 

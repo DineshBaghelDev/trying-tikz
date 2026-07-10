@@ -39,6 +39,9 @@ Interactive model, pipeline, and prompt picker:
 python test_diagrams.py
 ```
 
+Interactive runs offer to build contact sheets automatically. Combined PDFs are collected in
+`runs/interactive-best/` and review-sheet images are written to `runs/interactive-review/`.
+
 Basic smoke test:
 
 ```powershell
@@ -86,7 +89,7 @@ Pipeline choices:
 - `--pipeline plain` - one model call, then compile/repair.
 - `--pipeline templates` - expand the prompt into a drawing brief, inject the nearest exemplar, then compile/repair.
 - `--pipeline vision` - JSON spatial blueprint, TikZ generation, and optional rendered-image critique.
-- `--pipeline deterministic` - ask each model for typed JSON, compute derived geometry, validate constraints, and render TikZ in code.
+- `--pipeline deterministic` - adaptive quality pipeline: exact SymPy geometry where appropriate, trusted domain templates for canonical families, and blueprint/vision fallback for specialist illustrations.
 
 ## Outputs
 
@@ -128,6 +131,8 @@ That is the cheap path to good figures without hardcoding every topic.
 The deterministic path is based on reusable primitives rather than prompt-specific templates. SymPy Geometry performs midpoint, intersection, perpendicular projection, angle-bisector and relationship calculations; TikZ handles vector output. The harness adds the typed interchange format, validation report, model comparison, grids, axes, cuboid projection, and rendering orchestration.
 
 Each result records semantic validation and a domain-independent hardness breakdown in `summary.json`, so multiple models can be compared on the same specification task and renderer. Graphviz, Asymptote, and CircuiTikZ are not hard dependencies yet; add an adapter only when the regression suite exposes a diagram that the primitive layer cannot express.
+
+Adaptive results also record their selected route and rendered-image critique. `pass_rate` means a PDF compiled; `quality_pass_rate` means the best candidate scored at least 8/10 after semantic and visual checks. Use the quality rate when evaluating models.
 
 Example:
 

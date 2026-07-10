@@ -191,15 +191,18 @@ TEMPLATES = {
         "tikz": r"""\begin{tikzpicture}[scale=1]
 \draw[thick] (-4,-1.5) -- (3,-1.5) -- (3,1) -- cycle;
 \draw (1.6,-1.5) arc (180:159:1.4);
-\node at (1,-1.2) {$\theta$};
+\node at (2.05,-1.2) {$\theta$};
 \begin{scope}[shift={(-0.1,-0.02)},rotate=20]
 \draw[fill=gray!15] (-0.55,0) rectangle (0.55,0.75);
 \node at (0,0.37) {$m$};
 \end{scope}
 \coordinate (c) at (-0.1,0.35);
-\draw[->,thick] (c) -- ++(0,-1.7) node[below] {$mg$};
-\draw[->,thick] (c) -- ++(200:1.4) node[below left] {$f$};
-\draw[->,thick] (c) -- ++(110:1.5) node[above left] {$N$};
+\draw[->,thick] (c) -- (-0.1,-1.25);
+\node[right] at (0.55,-0.85) {$mg$};
+\draw[->,thick] (c) -- (-1.75,-0.25);
+\node[below] at (-2.05,-0.55) {$f$};
+\draw[->,thick] (c) -- (0.45,1.85);
+\node[right] at (0.9,1.75) {$N$};
 \end{tikzpicture}""",
     },
     "math-vector-components": {

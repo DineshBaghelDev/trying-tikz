@@ -6,9 +6,11 @@ from tikz_harness import core
 
 def run(run_dir, provider, model, prompt_name, prompt, timeout, retries, vision_model, critique):
     results = []
+    enriched_prompt = core.enrich_prompt(prompt)
     blueprint, blueprint_warnings = None, []
     try:
-        model, (bp_text, _, _) = core._call_with_fallback(provider, model, prompt, timeout, core.BLUEPRINT_SYSTEM_PROMPT)
+        model, (bp_text, _, _) = core._call_with_fallback(
+            provider, model, enriched_prompt, timeout, core.BLUEPRINT_SYSTEM_PROMPT)
         blueprint = core.parse_json_loose(bp_text)
         blueprint_warnings = core.lint_blueprint(blueprint)
     except (RuntimeError, json.JSONDecodeError, ValueError):
@@ -18,7 +20,8 @@ def run(run_dir, provider, model, prompt_name, prompt, timeout, retries, vision_
         model, (text, latency, usage) = core._call_with_fallback(
             provider, model, core.code_input(blueprint), timeout, core.CODE_SYSTEM_PROMPT)
     else:
-        model, (text, latency, usage) = core._call_with_fallback(provider, model, prompt, timeout, core.SYSTEM_PROMPT)
+        model, (text, latency, usage) = core._call_with_fallback(
+            provider, model, enriched_prompt, timeout, core.SYSTEM_PROMPT)
 
     result, stage_results = core._compile_with_repairs(
         run_dir, provider, model, prompt_name, prompt, timeout, retries,
@@ -30,7 +33,7 @@ def run(run_dir, provider, model, prompt_name, prompt, timeout, retries, vision_
     best = result
     for i in range(critique):
         try:
-            crit = core.vision_critique(vision_model, best["pdf"], prompt, timeout)
+            crit = core.vision_critique(vision_model, best["pdf"], enriched_prompt, timeout)
         except Exception as exc:
             best.setdefault("vision", {"error": str(exc)[:200]})
             break
@@ -44,7 +47,7 @@ def run(run_dir, provider, model, prompt_name, prompt, timeout, retries, vision_
         if blueprint is not None:
             try:
                 model, (bp_text, _, _) = core._call_with_fallback(
-                    provider, model, core.blueprint_repair_prompt(prompt, blueprint, crit),
+                    provider, model, core.blueprint_repair_prompt(enriched_prompt, blueprint, crit),
                     timeout, core.BLUEPRINT_SYSTEM_PROMPT)
                 blueprint = core.parse_json_loose(bp_text)
                 blueprint_warnings = core.lint_blueprint(blueprint)
@@ -54,7 +57,7 @@ def run(run_dir, provider, model, prompt_name, prompt, timeout, retries, vision_
                 provider, model, core.code_input(blueprint), timeout, core.CODE_SYSTEM_PROMPT)
         else:
             model, (text, latency, usage) = core._call_with_fallback(
-                provider, model, core.polish_prompt(prompt, Path(best["tikz"]).read_text(encoding="utf-8")),
+                provider, model, core.polish_prompt(enriched_prompt, Path(best["tikz"]).read_text(encoding="utf-8")),
                 timeout, core.SYSTEM_PROMPT)
         candidate, cand_results = core._compile_with_repairs(
             run_dir, provider, model, prompt_name, prompt, timeout, retries,
@@ -63,4 +66,3 @@ def run(run_dir, provider, model, prompt_name, prompt, timeout, retries, vision_
         if candidate["rendered"]:
             best = candidate
     return results
-

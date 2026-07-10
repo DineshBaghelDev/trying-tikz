@@ -11,12 +11,14 @@ from tikz_harness import core
 ROOT = Path(__file__).resolve().parent
 
 
-def choose(title, options):
+def choose(title, options, default=0):
     print(f"\n{title}")
     for index, option in enumerate(options, 1):
         print(f"  {index}. {option}")
     while True:
-        value = input("Choose: ").strip()
+        value = input(f"Choose [{default + 1}]: ").strip()
+        if not value:
+            return default
         if value.isdigit() and 1 <= int(value) <= len(options):
             return int(value) - 1
         print(f"Enter a number from 1 to {len(options)}.")
@@ -71,16 +73,37 @@ def select_prompts():
 
 
 def select_models():
-    architecture = choose("Test architecture", ["Single model", "Multiple Groq models", "External model matrix"])
-    if architecture == 0:
+    mode = choose("What do you want to do?", [
+        "Generate diagrams with one model (recommended)",
+        "Compare models using the same prompts",
+        "Use an external model-matrix file (advanced)",
+    ])
+    if mode == 0:
         provider = ("groq", "openai")[choose("Provider", ["Groq", "OpenAI"])]
-        default = core.GROQ_MODEL if provider == "groq" else core.OPENAI_MODEL
-        model = input(f"Model [{default}]: ").strip() or default
+        if provider == "groq":
+            models = [
+                ("openai/gpt-oss-20b", "GPT-OSS 20B - fast and inexpensive"),
+                ("qwen/qwen3-32b", "Qwen 3 32B - stronger diagram planning"),
+                ("openai/gpt-oss-120b", "GPT-OSS 120B - larger and slower"),
+            ]
+        else:
+            models = [(core.OPENAI_MODEL, f"Default OpenAI model - {core.OPENAI_MODEL}")]
+        selected = choose("Model", [label for _, label in models] + ["Enter another model ID"])
+        model = models[selected][0] if selected < len(models) else input("Exact model ID: ").strip()
+        if not model:
+            raise SystemExit("A model ID is required.")
         flag = "--groq-models" if provider == "groq" else "--openai-model"
         return ["--provider", provider, flag, model]
-    if architecture == 1:
-        default = core.GROQ_TEXT_MODELS
-        models = input(f"Comma-separated models [{default}]: ").strip() or default
+    if mode == 1:
+        recommended = "openai/gpt-oss-20b,qwen/qwen3-32b,openai/gpt-oss-120b"
+        selection = choose("Models to compare", [
+            "Recommended Groq set (3 models)",
+            "Enter my own comma-separated Groq model IDs",
+        ])
+        models = recommended if selection == 0 else input("Model IDs separated by commas: ").strip()
+        if not models:
+            raise SystemExit("At least one model ID is required.")
+        print("Each selected model will receive exactly the same prompts.")
         return ["--provider", "groq", "--groq-models", models]
 
     configs = sorted(ROOT.glob("*model*.json"))
@@ -92,11 +115,19 @@ def select_models():
 
 def main():
     print("Deterministic Diagram Harness")
-    command = [sys.executable, str(ROOT / "try_tikz.py")]
+    cli = [sys.executable, str(ROOT / "try_tikz.py")]
+    command = list(cli)
     command.extend(select_models())
 
-    pipelines = ["deterministic", "plain", "templates", "vision", "compare all pipelines"]
-    pipeline = pipelines[choose("Pipeline", pipelines)]
+    pipeline_values = ["deterministic", "vision", "templates", "plain", "compare all pipelines"]
+    pipeline_labels = [
+        "Deterministic - model writes JSON; SymPy validates geometry (recommended)",
+        "Vision - model draws TikZ and a vision model reviews it",
+        "Templates - model draws TikZ using a similar example",
+        "Plain - model draws TikZ directly",
+        "Compare all pipelines - slowest; runs every method",
+    ]
+    pipeline = pipeline_values[choose("How should diagrams be generated?", pipeline_labels)]
     if pipeline == "compare all pipelines":
         command.append("--compare")
     else:
@@ -104,11 +135,23 @@ def main():
 
     command.extend(select_prompts())
     retries = input("Compile/spec repair retries [1]: ").strip() or "1"
-    command.extend(["--retries", retries, "--runs-dir", str(ROOT / "runs" / "interactive")])
+    runs_dir = ROOT / "runs" / "interactive"
+    command.extend(["--retries", retries, "--runs-dir", str(runs_dir)])
+    make_sheet = input("Create/update contact sheets after the run? [Y/n]: ").strip().lower() != "n"
 
     print("\nRunning:")
     print(subprocess.list2cmdline(command))
-    raise SystemExit(subprocess.run(command, cwd=ROOT).returncode)
+    result = subprocess.run(command, cwd=ROOT)
+    if result.returncode or not make_sheet or "--compare" in command:
+        raise SystemExit(result.returncode)
+
+    best_dir = ROOT / "runs" / "interactive-best"
+    review_dir = ROOT / "runs" / "interactive-review"
+    collect = cli + ["--collect-best", "--by-model", "--runs-dir", str(runs_dir), "--best-dir", str(best_dir)]
+    sheet = cli + ["--contact-sheet", "--best-dir", str(best_dir), "--review-dir", str(review_dir)]
+    if subprocess.run(collect, cwd=ROOT).returncode == 0:
+        if subprocess.run(sheet, cwd=ROOT).returncode == 0:
+            print(f"\nContact sheets: {review_dir}")
 
 
 if __name__ == "__main__":
